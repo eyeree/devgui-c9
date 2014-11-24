@@ -187,12 +187,16 @@ var config = [
     "./cloud9.run.shell",
     {
         packagePath: "./cloud9.run.node",
-        listenHint: "Important: in your scripts, use 'process.env.PORT' as port and '0.0.0.0' as host."
+        listenHint: "Important: in your scripts, use 'process.env.PORT' as port and '0.0.0.0' as host.",
+        nodePath: "node",
+        nodemonPath: "nodemon"
     },
     {
         packagePath: "./cloud9.run.node-debug",
         listenHint: "Important: in your scripts, use 'process.env.PORT' as port and '0.0.0.0' as host.",
-        debugPort: debugPort
+        debugPort: debugPort,
+        nodePath: "node",
+        nodemonPath: "nodemon"
     },
     "./cloud9.run.npm",
     "./cloud9.run.npmnode",

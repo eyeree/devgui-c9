@@ -65,13 +65,13 @@ util.inherits(RubyRuntimePlugin, Plugin);
             case "run":
             case "rundebug":
             case "rundebugbrk":
-                this.$run(message.file, message.args || [], message.env || {}, message.version, message, client);
+                this.$run(message.file, message.args || [], message.env || {}, message, client);
                 break;
 /*            case "rundebug":
-                this.$debug(message.file, message.args || [], message.env || {}, false, message.version, message, client);
+                this.$debug(message.file, message.args || [], message.env || {}, false, message, client);
                 break;
             case "rundebugbrk":
-                this.$debug(message.file, message.args || [], message.env || {}, true, message.version, message, client);
+                this.$debug(message.file, message.args || [], message.env || {}, true, message, client);
                 break;*/
             case "kill":
                 this.$kill(message.pid, message, client);
@@ -82,7 +82,7 @@ util.inherits(RubyRuntimePlugin, Plugin);
         return res;
     };
 
-    this.$run = function(file, args, env, version, message, client) {
+    this.$run = function(file, args, env, message, client) {
         var self = this;
         this.workspace.getExt("state").getState(function(err, state) {
             if (err)
@@ -95,7 +95,6 @@ util.inherits(RubyRuntimePlugin, Plugin);
                 file: file,
                 args: args,
                 env: env,
-                nodeVersion: version,
                 extra: message.extra,
                 encoding: "ascii"
             }, self.channel, function(err, pid, child) {
@@ -105,7 +104,7 @@ util.inherits(RubyRuntimePlugin, Plugin);
         });
     };
 
-    this.$debug = function(file, args, env, breakOnStart, version, message, client) {
+    this.$debug = function(file, args, env, breakOnStart, message, client) {
         var self = this;
         this.workspace.getExt("state").getState(function(err, state) {
             if (err)
@@ -119,7 +118,6 @@ util.inherits(RubyRuntimePlugin, Plugin);
                 args: args,
                 env: env,
                 breakOnStart: breakOnStart,
-                nodeVersion: version,
                 extra: message.extra,
                 encoding: "ascii"
             }, self.channel, function(err, pid) {

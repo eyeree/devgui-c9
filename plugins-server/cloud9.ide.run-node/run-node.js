@@ -68,19 +68,19 @@ util.inherits(NodeRuntimePlugin, Plugin);
 
     this.command = function(user, message, client) {
         var cmd = (message.command || "").toLowerCase();
-        if (!(/node/.test(message.runner)))
+        if (!(/node/.test(message.runner)) && !(/nodemon/.test(message.runner)))
             return false;
         
         var res = true;
         switch (cmd) {
             case "run":
-                this.$run(message.file, message.args || [], message.env || {}, message.version, message, client);
+                this.$run(message.file, message.args || [], message.env || {}, message, client);
                 break;
             case "rundebug":
-                this.$debug(message.file, message.args || [], message.env || {}, false, message.version, message, client);
+                this.$debug(message.file, message.args || [], message.env || {}, false, message, client);
                 break;
             case "rundebugbrk":
-                this.$debug(message.file, message.args || [], message.env || {}, true, message.version, message, client);
+                this.$debug(message.file, message.args || [], message.env || {}, true, message, client);
                 break;
             case "kill":
                 this.$kill(message.pid, message, client);
@@ -101,7 +101,7 @@ util.inherits(NodeRuntimePlugin, Plugin);
         return res;
     };
 
-    this.$run = function(file, args, env, version, message, client) {
+    this.$run = function(file, args, env, message, client) {
         var self = this;
         this.workspace.getExt("state").getState(function(err, state) {
             if (err)
@@ -114,7 +114,7 @@ util.inherits(NodeRuntimePlugin, Plugin);
                 file: file,
                 args: args,
                 env: env,
-                nodeVersion: version,
+                monitor: message.runner === "nodemon",
                 extra: message.extra,
                 encoding: "ascii"
             }, self.channel, function(err, pid, child) {
@@ -124,7 +124,7 @@ util.inherits(NodeRuntimePlugin, Plugin);
         });
     };
 
-    this.$debug = function(file, args, env, breakOnStart, version, message, client) {
+    this.$debug = function(file, args, env, breakOnStart, message, client) {
         var self = this;
         this.workspace.getExt("state").getState(function(err, state) {
             if (err)
@@ -138,7 +138,7 @@ util.inherits(NodeRuntimePlugin, Plugin);
                 args: args,
                 env: env,
                 breakOnStart: breakOnStart,
-                nodeVersion: version,
+                monitor: message.runner === "nodemon",
                 extra: message.extra,
                 encoding: "ascii"
             }, self.channel, function(err, pid) {

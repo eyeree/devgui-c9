@@ -202,8 +202,7 @@ var ProcessManager = module.exports = function(runners, eventEmitter) {
             return callback("Process does not exist");
 
         child.killed = true;
-        child.kill("SIGKILL");
-        callback();
+        child.kill(callback);
     };
 
 }).call(ProcessManager.prototype);

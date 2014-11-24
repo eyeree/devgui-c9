@@ -137,8 +137,7 @@ module.exports = ext.register("ext/noderunner/noderunner", {
     debug : function() {
     },
 
-    run : function(path, args, debug, nodeVersion) {
-        var runner;
+    run : function(path, args, debug, runner) {
         if (stProcessRunning.active || typeof path != "string")
             return false;
         // TODO there should be a way to set state to waiting
@@ -146,13 +145,8 @@ module.exports = ext.register("ext/noderunner/noderunner", {
 
         path = path.trim();
 
-        if (nodeVersion == 'default' || !nodeVersion) {
+        if (runner == 'default' || !runner) {
             runner = this.detectRunner(path);
-            nodeVersion = runner == 'node' ? settings.model.queryValue("auto/node-version/@version") || this.NODE_VERSION : 'auto';
-        }
-        else {
-            runner = nodeVersion.split(" ")[0];
-            nodeVersion = nodeVersion.split(" ")[1] || 'auto';
         }
 
         var page = ide.getActivePageModel();
@@ -161,7 +155,6 @@ module.exports = ext.register("ext/noderunner/noderunner", {
             "file"    : path.replace(/^\/+/, ""),
             "runner"  : runner,
             "args"    : args || [],
-            "version" : nodeVersion,
             "env"     : {
                 "C9_SELECTED_FILE": page ? page.getAttribute("path").slice(ide.davPrefix.length) : ""
             }
@@ -191,7 +184,7 @@ module.exports = ext.register("ext/noderunner/noderunner", {
         if (path.match(/\.rb$/))
             return "ruby";
 
-        return "node";
+        return "nodemon";
     }
 });
 

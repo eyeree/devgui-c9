@@ -76,14 +76,13 @@ util.inherits(NpmRuntimePlugin, Plugin);
         return false;
     };
 
-    this.$run = function(file, args, env, version, message, client) {
+    this.$run = function(file, args, env, message, client) {
         var self = this;
 
         this.pm.spawn("run-npm", {
             file: file,
             args: args,
             env: env,
-            nodeVersion: version,
             extra: message.extra,
             cwd: message.cwd,
             encoding: "ascii"
@@ -118,7 +117,7 @@ util.inherits(NpmRuntimePlugin, Plugin);
         });
 
         if (message.command === "node" && message.argv.length > 1)
-            return this.$run(message.argv[1], message.argv.slice(2), message.env || {},  message.version, message, null);
+            return this.$run(message.argv[1], message.argv.slice(2), message.env || {}, message, null);
         else if (message.command == "rvm")
             return cb("rvm isn't supported by the console - please use the terminal instead");
 

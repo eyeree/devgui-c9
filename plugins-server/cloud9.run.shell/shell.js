@@ -113,7 +113,7 @@ var Runner = exports.Runner = function(vfs, options, callback) {
 
     this.createChild = function(callback) {
         this.runOptions.args = this.args;
-        //console.log(this.command, this.runOptions);
+        console.log(this.command, this.runOptions);
         this.vfs.spawn(this.command, this.runOptions, function(err, meta) {
             callback(err, meta && meta.process);
         });
@@ -144,6 +144,9 @@ var Runner = exports.Runner = function(vfs, options, callback) {
 
         child.on("exit", function(code) {
             self.pid = 0;
+            if(self.exitCallback) {
+                self.exitCallback();
+            }
             emit({
                 "type": self.name + "-exit",
                 "pid": pid,
@@ -161,8 +164,35 @@ var Runner = exports.Runner = function(vfs, options, callback) {
         });
     };
 
-    this.kill = function(signal) {
-        this.child && this.child.kill(signal);
+    this.kill = function(callback) {
+        
+        if(!this.child || !this.pid) {
+            callback();
+        } else {
+            
+            var self = this;
+            
+            var watchdog = setTimeout(
+                function() {
+                    if(self.pid) {
+                        self.child.kill("SIGKILL");
+                    }
+                },
+                10000
+            );
+            
+            this.exitCallback = function() {
+                
+                clearTimeout(watchdog);
+                
+                callback();
+                
+            };
+            
+            this.child.kill("SIGTERM");
+            
+        }
+        
     };
 
     this.describe = function() {

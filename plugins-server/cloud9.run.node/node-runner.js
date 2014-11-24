@@ -7,7 +7,7 @@ var ShellRunner = require("../cloud9.run.shell/shell").Runner;
 /**
  * Run node scripts with restricted user rights
  */
-var exports = module.exports = function(url, listenHint, vfs, pm, sandbox, usePort, nodePath, nodeVersions, callback) {
+var exports = module.exports = function(url, listenHint, vfs, pm, sandbox, usePort, nodePath, nodemonPath, callback) {
     sandbox.getProjectDir(function(err, projectDir) {
         if (err) return callback(err);
 
@@ -15,13 +15,13 @@ var exports = module.exports = function(url, listenHint, vfs, pm, sandbox, usePo
     });
 
     function init(projectDir, url) {
-        pm.addRunner("node", exports.factory(vfs, sandbox, projectDir, url, listenHint, nodePath, nodeVersions, usePort));
+        pm.addRunner("node", exports.factory(vfs, sandbox, projectDir, url, listenHint, nodePath, nodemonPath, usePort));
 
         callback();
     }
 };
 
-exports.factory = function(vfs, sandbox, root, url, listenHint, nodePath, nodeVersions, usePort) {
+exports.factory = function(vfs, sandbox, root, url, listenHint, nodePath, nodemonPath, usePort) {
     return function(args, eventEmitter, eventName, callback) {
         var options = {};
         c9util.extend(options, args);
@@ -30,10 +30,7 @@ exports.factory = function(vfs, sandbox, root, url, listenHint, nodePath, nodeVe
         options.args = args.args;
         options.cwd = args.cwd;
         options.env = args.env;
-        options.nodePath = args.nodePath ||
-            (nodeVersions && args.nodeVersion && nodeVersions[args.nodeVersion]) ||
-            nodePath || process.execPath;
-        options.nodeVersion = args.nodeVersion;
+        options.nodePath = args.monitor ? nodemonPath : nodePath;
         options.encoding = args.encoding;
         options.eventEmitter = eventEmitter;
         options.eventName = eventName;
@@ -56,7 +53,6 @@ var Runner = exports.Runner = function(vfs, options, callback) {
 
     self.vfs = vfs;
     self.root = options.root;
-    self.nodeVersion = options.nodeVersion || "auto";
     self.file = options.file || "";
     options.env = options.env || {};
 

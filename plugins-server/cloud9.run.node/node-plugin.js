@@ -10,7 +10,7 @@ module.exports = function setup(options, imports, register) {
     assert(options.listenHint, "Option 'listenHint' is required");
 
     NodeRunner.call(this, options.url, options.listenHint, vfs, pm, sandbox,
-        false, options.nodePath, options.nodeVersions, function (err) {
+        false, options.nodePath, options.nodemonPath, function (err) {
         if (err) return register(err);
 
         register(null, {

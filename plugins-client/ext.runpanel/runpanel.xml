@@ -98,10 +98,8 @@
                         <a:model id="mdlRunnerSelector">
                             <data>
                                 <element caption="Default" value="default" />
-                                <element caption="Node.js (Auto)" value="node auto" />
-                                <element caption="Node.js 0.10.x" value="node 0.10" />
-                                <element caption="Node.js 0.8.x" value="node 0.8" />
-                                <element caption="Node.js 0.6.x" value="node 0.6" />
+                                <element caption="Nodemon" value="nodemon" />
+                                <element caption="Node" value="node" />
                                 <element caption="Apache+PHP" value="apache" />
                                 <element caption="PHP CLI" value="php" />
                                 <element caption="Python" value="python" />

@@ -30,28 +30,32 @@ module.exports = {
             assert.ok(pid);
         });
 
-        var events = [];
+        var events = ["shell-start", "shell-data", "shell-exit"];
         self.eventEmitter.on("shell", function(msg) {
-            events.push(msg);
 
-            if (events.length > 3)
-                assert.fail();
+            var i = events.indexOf(msg.type);
+            assert.ok(i !== -1);
+            events.splice(i, 1);
+            
+            if(msg.type === "shell-start") {
+                assert.equal(msg.pid, pid);
+            }
 
-            if (events.length == 3) {
-                assert.equal(events[0].type, "shell-start");
-                assert.equal(events[0].pid, pid);
-
-                assert.equal(events[1].type, "shell-data");
-                assert.equal(events[1].stream, "stdout");
-                assert.ok(events[1].data.toString().indexOf(__filename.split("/").pop()) !== -1);
-                assert.equal(events[1].pid, pid);
-
-                assert.equal(events[2].type, "shell-exit");
-                assert.equal(events[2].code, 0);
-                assert.equal(events[2].pid, pid);
-
+            if(msg.type === "shell-data") {            
+                assert.equal(msg.stream, "stdout");
+                assert.ok(msg.data.toString().indexOf(__filename.split("/").pop()) !== -1);
+                assert.equal(msg.pid, pid);
+            }
+            
+            if(msg.type === "shell-exit") {
+                assert.equal(msg.code, 0);
+                assert.equal(msg.pid, pid);
+            }
+            
+            if(events.length === 0) {
                 next();
             }
+            
         });
     },
 

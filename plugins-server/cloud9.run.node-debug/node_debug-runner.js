@@ -8,7 +8,7 @@ var NodeDebugProxy = require("./nodedebugproxy");
  * debug node scripts with restricted user rights
  */
 
-var exports = module.exports = function (url, listenHint, vfs, pm, sandbox, runNode, usePortFlag, nodePath, nodeVersions, debugPort, callback) {
+var exports = module.exports = function (url, listenHint, vfs, pm, sandbox, runNode, usePortFlag, nodePath, nodemonPath, debugPort, callback) {
     var NodeRunner = runNode.Runner;
 
     debugPort = parseInt(debugPort);
@@ -23,14 +23,14 @@ var exports = module.exports = function (url, listenHint, vfs, pm, sandbox, runN
     });
 
     function init(projectDir, url) {
-        pm.addRunner("node-debug", exports.factory(vfs, sandbox, projectDir, url, listenHint, usePortFlag, nodePath, nodeVersions, debugPort));
+        pm.addRunner("node-debug", exports.factory(vfs, sandbox, projectDir, url, listenHint, usePortFlag, nodePath, nodemonPath, debugPort));
 
         callback();
     }
 };
 
 function setup (NodeRunner) {
-    exports.factory = function(vfs, sandbox, root, url, listenHint, usePortFlag, nodePath, nodeVersions, debugPort) {
+    exports.factory = function(vfs, sandbox, root, url, listenHint, usePortFlag, nodePath, nodemonPath, debugPort) {
         return function(args, eventEmitter, eventName, callback) {
             var options = {};
             c9util.extend(options, args);
@@ -39,11 +39,8 @@ function setup (NodeRunner) {
             options.args = args.args;
             options.cwd = args.cwd;
             options.env = args.env;
-            options.nodeVersion = args.nodeVersion;
             options.debugPort = debugPort;
-            options.nodePath = args.nodePath ||
-                (nodeVersions && args.nodeVersion && nodeVersions[args.nodeVersion]) ||
-                nodePath || process.execPath;
+            options.nodePath = args.monitor ? nodemonPath : nodePath;
             options.encoding = args.encoding;
             options.breakOnStart = args.breakOnStart;
             options.eventEmitter = eventEmitter;
