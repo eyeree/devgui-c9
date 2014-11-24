@@ -1,5 +1,10 @@
 #!/usr/bin/env node
 
+if (process.env.NODE_ENV !== 'production'){
+  require('longjohn');
+  console.log("**** LongJohn *****");
+}
+
 var path = require('path');
 var architect = require("architect");
 var spawn = require("child_process").spawn;

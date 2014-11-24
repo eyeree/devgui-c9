@@ -58,11 +58,27 @@ function setup (NodeRunner) {
     };
 
     var Runner = exports.Runner = function(vfs, options, callback) {
+        
         this.breakOnStart = options.breakOnStart;
-        this.debugPort = options.debugPort;
         this.msgQueue = [];
         
-        NodeRunner.call(this, vfs, options, callback);
+        if(options.debugPort == -1) {
+            
+            var self = this;
+        
+            options.sandbox.getPort(function (err, port) {
+                if (err) {
+                    return console.error("getPort failed");
+                }
+                self.debugPort = port;
+                NodeRunner.call(self, vfs, options, callback);
+            });
+            
+        } else {
+            this.debugPort = options.debugPort;
+            NodeRunner.call(this, vfs, options, callback);
+        }
+        
     };
 
     util.inherits(Runner, NodeRunner);
@@ -85,6 +101,9 @@ function setup (NodeRunner) {
                 _self.nodeArgs.push("--debug-brk=" + port);
             else
                 _self.nodeArgs.push("--debug=" + port);
+                
+            // force v8 to complile so breakpoints line numbers match the code
+            _self.nodeArgs.push("--nolazy"); 
             
             Parent.prototype.createChild.call(_self, callback);
 
@@ -96,8 +115,9 @@ function setup (NodeRunner) {
         proto.debugCommand = function(msg) {
             this.msgQueue.push(msg);
 
-            if (!this.nodeDebugProxy || !this.nodeDebugProxy.connected)
+            if (!this.nodeDebugProxy || !this.nodeDebugProxy.connected) {
                 return;
+            }
 
             this._flushSendQueue();
         };

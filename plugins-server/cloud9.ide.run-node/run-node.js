@@ -91,7 +91,7 @@ util.inherits(NodeRuntimePlugin, Plugin);
                         // uncommenting this helps with debugging, but we keep it
                         // commented out for the moment, because it throws at the moment
                         // that you stop the debugger, so we have to fix that some day
-                        // console.error("debugnode threw error", err)
+                        console.error("debugnode threw error", err)
                     }
                 });
                 break;
