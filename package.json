@@ -1,14 +1,14 @@
 {
-  "name": "weditable",
-  "description": "Makes node.js apps editiable using a web browser.",
+  "name": "devgui",
+  "description": "A developer gui for node.js applications.",
   "version": "0.0.0",
-  "homepage": "https://github.com/eyeree/weditable",
+  "homepage": "https://github.com/eyeree/devgui",
   "engines": {
     "node": ">= 0.10.25"
   },
   "author": "mike@eyeree.me",
   "help": {
-    "web": "https://github.com/eyeree/weditable/blob/master/README.md"
+    "web": "https://github.com/eyeree/devgui/blob/master/README.md"
   },
   "dependencies": {
     "jsDAV": "https://github.com/ajaxorg/jsDAV/tarball/f78c34c94fa915ca1b24975839b78ff88ea851d6",
@@ -46,7 +46,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/eyeree/weditable.git"
+    "url": "https://github.com/eyeree/devgui.git"
   },
   "licenses": [
     {
@@ -55,12 +55,12 @@
     }
   ],
   "scripts": {
-    "start": "sh ./bin/weditable.sh",
+    "start": "sh ./bin/devgui.sh",
     "build-debug": "node ./scripts/build-debug",
     "build-packed": "node ./scripts/build-packed",
     "postinstall": "make ace"
   },
   "bin": {
-    "wedit": "./bin/wedit.sh"
+    "devgui": "./bin/devgui.sh"
   }
 }
