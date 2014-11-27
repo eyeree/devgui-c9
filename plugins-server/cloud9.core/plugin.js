@@ -69,7 +69,7 @@ util.inherits(Plugin, events.EventEmitter);
             };
         }
 
-        child.on("exit", function(code) {
+        child.on("close", function(code) {
             delete _self.activePs;
             onexit && onexit(code, err, out);
         });

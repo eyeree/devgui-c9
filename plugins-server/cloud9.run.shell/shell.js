@@ -81,7 +81,7 @@ var Runner = exports.Runner = function(vfs, options, callback) {
             var out = "";
             var err = "";
 
-            child.on("exit", function(code) {
+            child.on("close", function(code) {
                 onExit(code, out, err);
                 self.pid = 0;
             });
@@ -142,7 +142,7 @@ var Runner = exports.Runner = function(vfs, options, callback) {
             };
         }
 
-        child.on("exit", function(code) {
+        child.on("close", function(code) {
             self.pid = 0;
             if(self.exitCallback) {
                 self.exitCallback();

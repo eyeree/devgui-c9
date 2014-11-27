@@ -55,9 +55,7 @@
     }
   ],
   "scripts": {
-    "start": "sh ./bin/devgui.sh",
-    "build-debug": "node ./scripts/build-debug",
-    "build-packed": "node ./scripts/build-packed",
+    "start": "sh ./bin/devgui.sh -p 8080 -l 0.0.0.0 -w /workspace",
     "postinstall": "make ace"
   },
   "bin": {

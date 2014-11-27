@@ -61,7 +61,7 @@ module.exports = function() {
                 stderr += data;
             });
 
-            meta.process.on("exit", function(code) {
+            meta.process.on("close", function(code) {
                 onExit(code, stderr);
             });
         });

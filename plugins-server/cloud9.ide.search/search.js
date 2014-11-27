@@ -80,7 +80,7 @@ module.exports = function() {
                 stderr += data;
             });
 
-            child.on("exit", function(code) {
+            child.on("close", function(code) {
                 self.processCount -= 1;
                 onExit(code, stderr, {
                     count: count,

@@ -51,16 +51,24 @@ module.exports = function setup(options, imports, register) {
 
         this.getList = function(req, res, next) {
             var uid = req.session.uid || req.session.anonid;
-            if (!uid)
+            //console.log("getList uid:", uid);
+            if (!uid) {
+                console.log("no uid");
                 return next(new error.Unauthorized());
+            }
 
             // does this user has read-permissions...
             Permissions.getPermissions(uid, this.ws, "fs_filelist", function(err, perms) {
-                if (err)
+                //console.log("got permissions", err, perms);
+                if (err) {
+                    console.log("getPermissions err", err);
                     return next(err);
+                }
 
-                if (perms.fs.indexOf("r") === -1)
+                if (perms.fs.indexOf("r") === -1) {
+                    console.log("no read access");
                     return next(new error.Forbidden("You are not allowed to view this resource"));
+                }
 
                 // and kick off the download action!
                 var query = Url.parse(req.url, true).query;
@@ -69,8 +77,13 @@ module.exports = function setup(options, imports, register) {
                 Filelist.exec(query, Vfs,
                     // incoming data
                     function(msg) {
-                        if (!msg)
+                        
+                        if (!msg) {
+                            console.log("no msg");                            
                             return;
+                        }
+                            
+                        //console.log("filelist msg", msg, res);
 
                         if (!res.headerSent)
                             res.writeHead(200, { "content-type": "text/plain" });
@@ -78,10 +91,13 @@ module.exports = function setup(options, imports, register) {
                     },
                     // process exit
                     function(code, stderr) {
-                        if (code === 0)
+                        if (code === 0) {
+                            //console.log("process exit code === 0");
                             return res.end();
+                        }
 
                         var errMsg = "Process terminated with code " + code + ", " + stderr;
+                        //console.log("process exit", errMsg);
                         if (!res.headerSent)
                             return next(errMsg);
 
