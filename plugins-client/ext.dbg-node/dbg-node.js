@@ -57,7 +57,6 @@ oop.inherits(v8DebugClient, DebugHandler);
         this.$v8ds = new DebuggerService(pid, runner);
         this.$v8ds.connect();
         this.$startDebugging();
-        this.$syncAfterAttach();
         //console.log("dbg-node ATTACHED");
     };
 
