@@ -116,6 +116,7 @@ define(function(require, exports, module) {
         });
 
         connection.on("message", function(message) {
+            //console.log("IDE REC ", message);
             if (typeof message == "string") {
                 try {
                     message = JSON.parse(message);
@@ -160,6 +161,7 @@ define(function(require, exports, module) {
     this.inited = true;
 
     ide.send = function(msg) {
+        //console.log("IDE SEND", msg);
         // if we're already connected, then do an action
         if (ide.connected === true) {
             ide.connection.send(msg);

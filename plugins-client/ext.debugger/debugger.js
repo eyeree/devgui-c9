@@ -237,38 +237,34 @@ module.exports = ext.register("ext/debugger/debugger", {
         }
 
         ide.addEventListener("dbg.ready", function(e) {
-            if (_self.$dbgImpl)
-                return;
+            //console.log("debugger - received dbg.ready");
             var runnerMatch = /(\w+)-debug-ready/.exec(e.type);
-            var debugHandler;
-            if (runnerMatch && (debugHandler = getDebugHandler(runnerMatch[1]))) {
-                onAttach(debugHandler, e.pid, runnerMatch[1]);
-            }
-            else {
-                console.log("Appropriate debug handler not found !!");
+            if (_self.$dbgImpl) {
+                //console.log("debugger reattaching");
+                // re-attach because debugger was restarted (presumably by nodemon)
+                _self.$dbgImpl.detach();
+                _self.$dbgImpl.attach(parseInt(e.pid, 10), runnerMatch[1]);
+            } else {
+                var debugHandler;
+                if (runnerMatch && (debugHandler = getDebugHandler(runnerMatch[1]))) {
+                    //console.log("debugger attaching");
+                    onAttach(debugHandler, e.pid, runnerMatch[1]);
+                }
+                else {
+                    console.log("Appropriate debug handler not found !!");
+                }
             }
         });
 
         ide.addEventListener("dbg.exit", function(e) {
+            //console.log("debugger - received dbg.exit");
             if (_self.$dbgImpl) {
+                //console.log("debugger detaching");
                 _self.$dbgImpl.detach();
                 _self.$dbgImpl = null;
             }
         });
 
-        ide.addEventListener("dbg.state", function(e) {
-            if (_self.$dbgImpl)
-                return;
-
-            var runnerRE = /(\w+)-debug/;
-            var runnerMatch;
-            var debugHandler;
-            for (var attr in e) {
-                if ((runnerMatch = runnerRE.exec(attr)) && (debugHandler = getDebugHandler(runnerMatch[1]))) {
-                    onAttach(debugHandler, e[runnerMatch[0]], runnerMatch[1]);
-                }
-            }
-        });
     },
 
     init : function(amlNode) {

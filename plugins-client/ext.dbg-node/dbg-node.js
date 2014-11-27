@@ -24,6 +24,7 @@ oop.inherits(v8DebugClient, DebugHandler);
 
 (function() {
     this.$startDebugging = function() {
+        //console.log("dbg-node startDebugging")
         var v8dbg = this.$v8dbg = new V8Debugger(0, this.$v8ds);
         this.$v8breakpoints = {};
 
@@ -31,13 +32,12 @@ oop.inherits(v8DebugClient, DebugHandler);
         var onBreak = this.onBreak.bind(this);
         var onException = this.onException.bind(this);
         var onAfterCompile = this.onAfterCompile.bind(this);
+        
         // register event listeners
         v8dbg.addEventListener("changeRunning", onChangeRunning);
         v8dbg.addEventListener("break", onBreak);
         v8dbg.addEventListener("exception", onException);
         v8dbg.addEventListener("afterCompile", onAfterCompile);
-
-        this.onChangeFrame(null);
 
         // on detach remove all event listeners
         this.removeListeners = function () {
@@ -48,41 +48,27 @@ oop.inherits(v8DebugClient, DebugHandler);
         };
     };
 
-    this.$syncAfterAttach = function () {
-        var _self = this;
-        _self.loadSources(function() {
-            _self.backtrace(function() {
-                _self.updateBreakpoints(function() {
-                    _self.$v8dbg.listbreakpoints(function(e){
-                        _self.$handleDebugBreak(e.breakpoints, function() {
-                            if (_self.activeFrame) {
-                                ide.dispatchEvent("dbg.break", {frame: _self.activeFrame});
-                                _self.onChangeFrame(_self.activeFrame);
-                            }
-                            _self.onChangeRunning();
-                        });
-                    });
-                });
-            }, true); // The sync backtrace should be silent
-        });
-    };
-
     this.attach = function(pid, runner) {
+        //console.log("dbg-node ATTACH");
         if (this.$v8ds)
             this.$v8ds.disconnect();
+        this.firstBreak = true;
         this.pid = pid;
         this.$v8ds = new DebuggerService(pid, runner);
         this.$v8ds.connect();
         this.$startDebugging();
         this.$syncAfterAttach();
+        //console.log("dbg-node ATTACHED");
     };
 
     this.detach = function() {
+        //console.log("dbg-node DETACH");
         this.$v8ds.disconnect();
         this.$v8ds = null;
         this.$v8dbg = null;
         this.onChangeRunning();
         this.removeListeners();
+        //console.log("dbg-node DETACHED");
     };
 
     this.onChangeRunning = function(e) {
@@ -99,13 +85,89 @@ oop.inherits(v8DebugClient, DebugHandler);
     };
 
     this.onBreak = function(e) {
-        var bps = e.data && e.data.breakpoints;
-        if (bps && bps.length === 1 && bps[0] === 1)
-            return;
+        
         var _self = this;
-        this.backtrace(function() {
-            ide.dispatchEvent("dbg.break", {frame: _self.activeFrame});
-        });
+        
+        //console.log("onBreak", _self.firstBreak);
+        
+        if(_self.firstBreak) {
+            _self.loadSources(function() {
+                _self.updateBreakpoints(function() {
+                    _self.$v8dbg.listbreakpoints(function(response){
+                        
+                        // The breakpoint inserted by v8 when the --debug-brk flag is used
+                        // has the type "scriptId". The breakpoints inserted for the user
+                        // have the type "scriptName". 
+                        //
+                        // We need to accomplish:
+                        //
+                        // 1) Find the system created breakpoint and clear it.
+                        //
+                        // 2) Determine if the system breakpoint location also happens to be 
+                        // an user created breakpoint location.
+                        //
+                        // 3) Continue execution, but only if there isn't also an user 
+                        // breakpoint at the same location as the system breakpoint.
+            
+                        var breakpoints = response.breakpoints;
+                                    
+                        var iBP;
+                        var systemBP;
+                        for(iBP = 0; iBP < breakpoints.length; ++iBP) {
+                            if(breakpoints[iBP].type === "scriptId") {
+                                systemBP = breakpoints[iBP];
+                                _self.$v8dbg.clearbreakpoint(systemBP.number, function(){});
+                                break;
+                            }
+                        }
+                        
+                        var isUserBP;
+                        if(systemBP) {
+                            
+                            var systemBPPath = _self.getPathFromScriptId(systemBP.script_id);
+                            if(systemBPPath) {
+                                var systemBPName = _self.getScriptnameFromPath(systemBPPath);
+                                
+                                for(iBP = 0; iBP < breakpoints.length; ++iBP) {
+                                    if(breakpoints[iBP].type === "scriptName") {
+                                        if(
+                                            breakpoints[iBP].script_name === systemBPName && 
+                                            breakpoints[iBP].line == systemBP.line
+                                        ) {
+                                            isUserBP = true;
+                                            break;
+                                        }
+                                    }
+                                    
+                                }
+                                
+                                
+                            }
+                            
+                        }
+                    
+                        if(isUserBP) {
+                            _self.backtrace(function() {
+                                ide.dispatchEvent("dbg.break", {frame: _self.activeFrame});
+                            });
+                        } else {
+                            _self.onChangeFrame(null);
+                            _self.resume(null, null, function() {});
+                        }
+                        
+                        _self.onChangeRunning();
+                        
+                        _self.firstBreak = false;
+            
+                    });
+                });
+            });
+            
+        } else {
+            this.backtrace(function() {
+                ide.dispatchEvent("dbg.break", {frame: _self.activeFrame});
+            });
+        }
     };
 
     this.onException = function(e) {
@@ -128,32 +190,6 @@ oop.inherits(v8DebugClient, DebugHandler);
         this.activeFrame = frame;
         if (!silent)
             ide.dispatchEvent("dbg.changeFrame", {data: frame});
-    };
-
-    this.$handleDebugBreak = function(remoteBreakpoints, callback) {
-        var frame = this.activeFrame;
-        if (!frame || !this.$v8dbg)
-            return callback();
-        var bp = remoteBreakpoints[0];
-        if (!bp)
-            return this.resume(null, null, callback);
-        if (bp.number !== 1)
-            return callback();
-
-        var uibp = mdlDbgBreakpoints.queryNode(
-            "//breakpoint[@line='" + frame.getAttribute("line") +"' and @path='" +
-            frame.getAttribute("scriptPath") + "']"
-        ) || mdlDbgBreakpoints.queryNode(
-            "//breakpoint[@line='" + bp.line +"' and @path='" +
-            this.getPathFromScriptId(bp.script_id) + "']"
-        );
-
-        if (uibp && uibp.getAttribute("enabled") == "true")
-            return callback();
-
-        this.$v8dbg.clearbreakpoint(1, function(){});
-        this.onChangeFrame(null);
-        this.resume(null, null, callback);
     };
 
     // apf xml helpers
@@ -386,6 +422,9 @@ oop.inherits(v8DebugClient, DebugHandler);
         var _self = this;
         var model = mdlDbgStack;
         this.$v8dbg.backtrace(null, null, null, true, function(body, refs) {
+            
+            //console.log("backtrace", body, refs);
+            
             function ref(id) {
                 for (var i=0; i<refs.length; i++) {
                     if (refs[i].handle == id) {
@@ -553,15 +592,19 @@ oop.inherits(v8DebugClient, DebugHandler);
 
         uiBreakpoints.forEach(function(bp) {
             bp.scriptname = _self.getScriptnameFromPath(bp.path);
-            if (!bp.scriptname)
+            if (!bp.scriptname) {
+                console.log("updateBreakpoints NO SCRIPT NAME", bp.path);
                 return;
-            bp.$location = bp.scriptname + "|" + bp.line + ":" + bp.column;
+            }
+            bp.$location = bp.scriptname + "|" + bp.line + ":" + (bp.column || 0);
 
             var oldBp = createdBreakpoints[bp.$location];
 
             // enabled doesn't work with v8debug so we just skip those
-            if (!bp.enabled)
+            if (!bp.enabled) {
+                //console.log("Skipping disabled breakpoint", bp);
                 return;
+            }
 
             delete createdBreakpoints[bp.$location];
             if (oldBp && isEqual(oldBp, bp)) {
@@ -580,9 +623,9 @@ oop.inherits(v8DebugClient, DebugHandler);
             var location = bp.script_name + "|" + bp.line + ":" + (bp.column || 0);
             var uiBp = _self.$v8breakpoints[location];
             if (uiBp) {
-                if (!uiBp.id || uiBp.id < bp.breakpoint) {
-                    uiBp.id = bp.breakpoint;
-                }
+                uiBp.id = bp.breakpoint;
+            } else {
+                console.log("bpCallback bp not found", bp);
             }
             counter--;
             if (!counter)

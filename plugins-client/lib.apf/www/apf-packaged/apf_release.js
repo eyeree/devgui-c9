@@ -2077,6 +2077,9 @@ apf.Class.prototype = new (function(){
 
                 //Capture support
                 if (arr = this.$captureStack[eventName]) {
+                    // Clone so that event handlers don't get called multiple times
+                    // should a new handler be inserted by the called handler.
+                    arr = arr.concat();
                     for (i = 0, l = arr.length; i < l; i++) {
                         rValue = arr[i].call(this, e || (e = new apf.AmlEvent(eventName, options)));
                         if (typeof rValue != UNDEF)
@@ -2097,6 +2100,9 @@ apf.Class.prototype = new (function(){
                 }
 
                 if (arr = this.$eventsStack[eventName]) {
+                    // Clone so that event handlers don't get called multiple times
+                    // should a new handler be inserted by the called handler.
+                    arr = arr.concat();
                     for (i = 0, l = arr.length; i < l; i++) {
                         if (!arr[i]) continue;
                         rValue = arr[i].call(this, e

@@ -29,6 +29,9 @@ module.exports = ext.register("ext/noderunner/noderunner", {
     NODE_VERSION: "auto",
 
     init : function() {
+        
+        //console.log("noderunner init");
+        
         var _self = this;
         if (ide.connected)
             this.queryServerState();
@@ -68,10 +71,12 @@ module.exports = ext.register("ext/noderunner/noderunner", {
         var runners = window.cloud9config.runners;
         var lang;
         if ((lang = /^(\w+)-debug-ready$/.exec(message.type)) && runners.indexOf(lang[1]) >= 0) {
+            //console.log("noderunner - dispatch dbg.ready", message.type)
             ide.dispatchEvent("dbg.ready", message);
             return;
         }
         else if ((lang = /^(\w+)-exit$/.exec(message.type)) && runners.indexOf(lang[1]) >= 0) {
+            //console.log("noderunner - dispatch dbg.exit", message.type);
             ide.dispatchEvent("dbg.exit", message);
             if (message.pid == this.nodePid) {
                 stProcessRunning.deactivate();
@@ -82,6 +87,7 @@ module.exports = ext.register("ext/noderunner/noderunner", {
 
         switch(message.type) {
             case "state":
+                //console.log("noderunner - dispatch dbg.state");
                 this.nodePid = message.processRunning || 0;
                 stProcessRunning.setProperty("active", !!message.processRunning);
 
@@ -89,6 +95,7 @@ module.exports = ext.register("ext/noderunner/noderunner", {
                 break;
 
             case "error":
+                //console.log("noderunner - error");
                 // child process already running
                 if (message.code == 1) {
                     stProcessRunning.setProperty("active", true);

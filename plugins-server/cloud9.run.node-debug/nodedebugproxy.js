@@ -17,16 +17,20 @@ var DebugProxy = module.exports = function(vfs, port) {
 
     var socket = new VfsSocket(vfs, port);
     socket.on("end", function(errorInfo) {
+        //console.log("PROXY END");
+        _self.service.detach(0, function() {});
         _self.connected = false;
         _self.emit("end", errorInfo);
     });
     this.service = new StandaloneV8DebuggerService(socket);
 
     this.service.addEventListener("connect", function() {
+        //console.log("PROXY CONNECTED");
         _self.connected = true;
         _self.emit("connection");
     });
     this.service.addEventListener("debugger_command_0", function(msg) {
+        //console.log("PROXY REC ", JSON.stringify(msg.data).substring(0,200));
         _self.emit("message", msg.data);
     });
 };
@@ -36,10 +40,16 @@ util.inherits(DebugProxy, process.EventEmitter);
 (function() {
 
     this.connect = function() {
-        this.service.attach(0, function() {});
+        // console.log("PROXY CONNECT");
+        this.service.attach(0, function(err) {
+            if(err) {
+                console.log("PROXY ATTACH ERR", err);
+            }
+        });
     };
 
     this.send = function(msgJson) {
+        //console.log("PROXY SEND", JSON.stringify(msgJson).substring(0,200));
         this.service.debuggerCommand(0, JSON.stringify(msgJson));
     };
 

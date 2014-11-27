@@ -186,7 +186,6 @@ util.inherits(Ide, EventEmitter);
             });
             user.on("disconnectUser", function(user) {
                 console.log("Running user disconnect timer...");
-
                 setTimeout(function() {
                     var now = new Date().getTime();
                     if ((now - user.last_message_time) > 10000) {

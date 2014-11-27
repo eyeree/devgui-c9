@@ -122,7 +122,7 @@ function setup (NodeRunner) {
         proto._flushSendQueue = function() {
             if (this.msgQueue.length && this.nodeDebugProxy.connected) {
                 for (var i = 0; i < this.msgQueue.length; i++) {
-                    // console.log("SEND", this.msgQueue[i])
+                    //console.log("SEND", this.msgQueue[i])
                     try {
                         this.nodeDebugProxy.send(this.msgQueue[i]);
                     } catch(e) {
@@ -145,7 +145,6 @@ function setup (NodeRunner) {
 
             this.nodeDebugProxy = new NodeDebugProxy(this.vfs, port);
             this.nodeDebugProxy.on("message", function(body) {
-                // console.log("REC", body)
                 send({
                     "type": "node-debug",
                     "pid": _self.pid,
@@ -155,7 +154,7 @@ function setup (NodeRunner) {
             });
 
             this.nodeDebugProxy.on("connection", function() {
-                // console.log("Debug proxy connected");
+                //console.log("Debug proxy connected");
                 send({
                     "type": "node-debug-ready",
                     "pid": _self.pid,
@@ -165,14 +164,21 @@ function setup (NodeRunner) {
             });
 
             this.nodeDebugProxy.on("end", function(err) {
-                // console.log("nodeDebugProxy terminated");
+                //console.log("nodeDebugProxy terminated");
                 if (err) {
                     // TODO send the error message back to the client
                     // _self.send({"type": "jvm-exit-with-error", errorMessage: err}, null, _self.name);
                     console.error(err);
                 }
-                if (_self.nodeDebugProxy)
-                    delete _self.nodeDebugProxy;
+                if(_self.killed) {
+                    //console.log("runner killed, deleting nodeDebugProxy");
+                    if (_self.nodeDebugProxy) {
+                        delete _self.nodeDebugProxy;
+                    }
+                } else {
+                    //console.log("runner not killed, reconnecting nodeDebugProxy");
+                    _self.nodeDebugProxy.connect();
+                }
             });
 
             this.nodeDebugProxy.connect();
