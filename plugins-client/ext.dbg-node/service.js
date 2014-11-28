@@ -11,8 +11,10 @@ var Util = require("v8debug/util");
 var EventEmitter = Util.EventEmitter;
 var ide = require("core/ide");
 
+var debug = false;
+
 var DebuggerService = module.exports = function(pid, runner) {
-    //console.log("Creating DebuggerService for PID", pid);
+    if(debug) console.log("Creating DebuggerService for PID", pid);
     this.$pid = pid;
     this.$runner = runner;
     this.$onMessageHandler = this.$onMessage.bind(this);
@@ -23,14 +25,14 @@ var DebuggerService = module.exports = function(pid, runner) {
     Util.implement(this, EventEmitter);
 
     this.connect = function() {
-        console.log("DebuggerService connect", this.$pid);
+        if(debug) console.log("DebuggerService connect", this.$pid);
         if (this.state != "connected")
             ide.addEventListener("socketMessage", this.$onMessageHandler);
         this.state = "connected";
     };
 
     this.disconnect = function() {
-        console.log("DebuggerService disconnect", this.$pid);
+        if(debug) console.log("DebuggerService disconnect", this.$pid);
         ide.removeEventListener("socketMessage", this.$onMessageHandler);
         this.state = null;
     };
@@ -38,14 +40,14 @@ var DebuggerService = module.exports = function(pid, runner) {
     this.$onMessage = function(data) {
         var message = data.message;
         if (message.type == "node-debug" && message.pid == this.$pid) {
-            console.log("REC ", message.body.request_seq, message.body.seq, message.body.type, message.body.command || message.body.event, message.body.success);
+            if(debug) console.log("REC ", message.body.request_seq, message.body.seq, message.body.type, message.body.command || message.body.event, message.body.success);
             this.emit("debugger_command_0", {data: message.body});
         }
     };
 
     this.debuggerCommand = function(tabId, v8Command) {
         var msgJson = JSON.parse(v8Command);
-        console.log("SEND", msgJson.seq, msgJson.type, msgJson.command);
+        if(debug) console.log("SEND", msgJson.seq, msgJson.type, msgJson.command);
         ide.send({
             command: "debugNode",
             pid: this.$pid,
