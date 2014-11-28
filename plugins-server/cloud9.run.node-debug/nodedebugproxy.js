@@ -9,6 +9,8 @@ var util = require("util");
 var VfsSocket = require("./vfs_socket");
 var StandaloneV8DebuggerService = require("v8debug").StandaloneV8DebuggerService;
 
+var debug = false;
+
 var DebugProxy = module.exports = function(vfs, port) {
     process.EventEmitter.call(this);
     var _self = this;
@@ -17,7 +19,7 @@ var DebugProxy = module.exports = function(vfs, port) {
 
     var socket = new VfsSocket(vfs, port);
     socket.on("end", function(errorInfo) {
-        //console.log("PROXY END");
+        if(debug) console.log("PROXY END");
         _self.service.detach(0, function() {});
         _self.connected = false;
         _self.emit("end", errorInfo);
@@ -25,12 +27,12 @@ var DebugProxy = module.exports = function(vfs, port) {
     this.service = new StandaloneV8DebuggerService(socket);
 
     this.service.addEventListener("connect", function() {
-        //console.log("PROXY CONNECTED");
+        if(debug) console.log("PROXY CONNECTED");
         _self.connected = true;
         _self.emit("connection");
     });
     this.service.addEventListener("debugger_command_0", function(msg) {
-        //console.log("PROXY REC ", JSON.stringify(msg.data).substring(0,200));
+        if(debug) console.log("PROXY REC ", JSON.stringify(msg.data).substring(0,200));
         _self.emit("message", msg.data);
     });
 };
@@ -40,7 +42,7 @@ util.inherits(DebugProxy, process.EventEmitter);
 (function() {
 
     this.connect = function() {
-        // console.log("PROXY CONNECT");
+        if(debug) console.log("PROXY CONNECT");
         this.service.attach(0, function(err) {
             if(err) {
                 console.log("PROXY ATTACH ERR", err);
@@ -49,7 +51,7 @@ util.inherits(DebugProxy, process.EventEmitter);
     };
 
     this.send = function(msgJson) {
-        //console.log("PROXY SEND", JSON.stringify(msgJson).substring(0,200));
+        if(debug) console.log("PROXY SEND", JSON.stringify(msgJson).substring(0,200));
         this.service.debuggerCommand(0, JSON.stringify(msgJson));
     };
 
