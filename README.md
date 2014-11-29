@@ -14,7 +14,7 @@ You can specify a different port using `-p PORT` flag.
 
     devgui -p 1234
 
-By default the servife will only listen to localhost.
+By default the server will only listen to localhost.
 To listen to a different IP or hostname, use the `-l HOSTNAME` flag.
 If you want to listen to all IP's:
 
@@ -28,7 +28,7 @@ or use the built in basic authentication through the `--username` and `--passwor
 
 You may also specify the directory that contains your node.js application using the workspace,
 `-w DIRECTORY`, flag. By default devgui assumes your project is in the current working
-directory when run the wedit command.
+directory when the devgui command was run.
 
     devgui -w ~/git/myproject
 
@@ -39,7 +39,7 @@ with a few quick and dirty bug fixes applied. It works well enough to be used
 for serious node.js application development, but...
 
 The open source cloud9 codebase and many of it's core dependencies, such
-as the APF (https://github.com/ajaxorg/apf), haven't received much attention 
+as APF (https://github.com/ajaxorg/apf), haven't received much attention 
 recently and have very little community support or documentation. It also hasn't
 kept up with new releases of other dependencies, such as ACE (https://github.com/ajaxorg/ace),
 the javescript based editor implemenation it uses. I also find the open
@@ -53,7 +53,7 @@ node.js community deserves.
 
 My origional intent was to incrementally evlove the code base into that tool,
 but after some consideration I decided that a clean start, still using ACE, 
-would be a better way to acieve devgui's goal:
+would be a better way to achieve devgui's goal:
 
 > Provide all developers with an easy to use and modify gui that streamlines 
 the node.js development process and is powerful engough to satisify the 

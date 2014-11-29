@@ -223,7 +223,7 @@ var config = [
     "./cloud9.ide.revisions",
     {
         packagePath: "./cloud9.ide.settings",
-        settingsPath: ".devgui"
+        settingsPath: ".devgui.settings"
     },
     "./cloud9.ide.shell",
     "./cloud9.ide.state",

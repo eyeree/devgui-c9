@@ -42,4 +42,6 @@ deps/ace/
 plugins-server/fixtures/
 npm-debug.log
 plugins-client/lib.apf/www/apf-packaged/apf_debug.js
-.sessions/
+.devgui.sessions
+.devgui.settings
+

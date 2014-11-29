@@ -1,7 +1,7 @@
 {
   "name": "devgui",
   "description": "A gui for developing node.js applications.",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "homepage": "https://github.com/eyeree/devgui-c9.git",
   "engines": {
     "node": ">= 0.10.25"
