@@ -1,19 +1,8 @@
 #!/bin/sh
 
-WORKSPACE=`pwd`
-echo WORKSPACE=$WORKSPACE
-
 ME="$(test -L "$0" && readlink -f "$0" || echo "$0")"
-#echo ME=$ME
-
-WEDITABLE="$(dirname "$(dirname "$ME")")"
-echo WEDITABLE=$WEDITABLE
-
-SERVER="$WEDITABLE/server.js"
-
-cd "$WEDITABLE"
-make worker
-cd "$WORKSPACE"
+DEVGUI="$(dirname "$(dirname "$ME")")"
+SERVER="$DEVGUI/server.js"
 
 case `uname -a` in
 Linux*x86_64*)  echo "Linux 64 bit"

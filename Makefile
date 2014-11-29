@@ -1,6 +1,6 @@
-.PHONY:    apf ext worker mode theme package test
+.PHONY: postinstall apf ext worker mode theme package test
 
-default: apf worker
+postinstall: ace worker
 
 update: worker
 
@@ -68,16 +68,16 @@ plugins-client/lib.ace/www/worker/worker-language.js plugins-client/lib.ace/www/
         $(wildcard node_modules/ace/*/*) \
         Makefile.dryice.js
 	mkdir -p plugins-client/lib.ace/www/worker
-	rm -rf /tmp/c9_worker_build
-	mkdir -p /tmp/c9_worker_build/ext
-	ln -s `pwd`/plugins-client/ext.language /tmp/c9_worker_build/ext/language
-	ln -s `pwd`/plugins-client/ext.codecomplete /tmp/c9_worker_build/ext/codecomplete
-	ln -s `pwd`/plugins-client/ext.jslanguage /tmp/c9_worker_build/ext/jslanguage
-	ln -s `pwd`/plugins-client/ext.csslanguage /tmp/c9_worker_build/ext/csslanguage
-	ln -s `pwd`/plugins-client/ext.htmllanguage /tmp/c9_worker_build/ext/htmllanguage
-	ln -s `pwd`/plugins-client/ext.linereport /tmp/c9_worker_build/ext/linereport
-	ln -s `pwd`/plugins-client/ext.linereport_php /tmp/c9_worker_build/ext/linereport_php
-	ln -s `pwd`/plugins-client/ext.linereport_python /tmp/c9_worker_build/ext/linereport_python
+	rm -rf tmp/c9_worker_build
+	mkdir -p tmp/c9_worker_build/ext
+	ln -s `pwd`/plugins-client/ext.language tmp/c9_worker_build/ext/language
+	ln -s `pwd`/plugins-client/ext.codecomplete tmp/c9_worker_build/ext/codecomplete
+	ln -s `pwd`/plugins-client/ext.jslanguage tmp/c9_worker_build/ext/jslanguage
+	ln -s `pwd`/plugins-client/ext.csslanguage tmp/c9_worker_build/ext/csslanguage
+	ln -s `pwd`/plugins-client/ext.htmllanguage tmp/c9_worker_build/ext/htmllanguage
+	ln -s `pwd`/plugins-client/ext.linereport tmp/c9_worker_build/ext/linereport
+	ln -s `pwd`/plugins-client/ext.linereport_php tmp/c9_worker_build/ext/linereport_php
+	ln -s `pwd`/plugins-client/ext.linereport_python tmp/c9_worker_build/ext/linereport_python
 	node Makefile.dryice.js worker
 	cp node_modules/ace/build/src/worker* plugins-client/lib.ace/www/worker
 

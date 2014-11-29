@@ -5,7 +5,7 @@ featured code editor with integrated debugging.
 
     npm install -g devgui
     cd <node app directory>
-    gevgui
+    devgui
     
 This will start a web server on port 3131. You can access it by
 pointing your browser to: [http://localhost:3131](http://localhost:3131). 

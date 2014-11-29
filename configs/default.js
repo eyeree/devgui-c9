@@ -171,7 +171,7 @@ var config = [
     },
     {
         packagePath: "./connect.session.file",
-        sessionsPath: __dirname + "/../.sessions",
+        sessionsPath: projectDir + "/.devgui.sessions",
         maxAge: 7 * 24 * 60 * 60 * 1000
     },
     "./cloud9.permissions",
