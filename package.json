@@ -1,14 +1,14 @@
 {
   "name": "devgui",
-  "description": "A developer gui for node.js applications.",
-  "version": "0.0.0",
-  "homepage": "https://github.com/eyeree/devgui",
+  "description": "A gui for developing node.js applications.",
+  "version": "0.1.0",
+  "homepage": "https://github.com/eyeree/devgui-c9.git",
   "engines": {
     "node": ">= 0.10.25"
   },
   "author": "mike@eyeree.me",
   "help": {
-    "web": "https://github.com/eyeree/devgui/blob/master/README.md"
+    "web": "https://github.com/eyeree/devgui-c9.git/blob/master/README.md"
   },
   "dependencies": {
     "jsDAV": "https://github.com/ajaxorg/jsDAV/tarball/f78c34c94fa915ca1b24975839b78ff88ea851d6",
@@ -46,7 +46,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/eyeree/devgui.git"
+    "url": "https://github.com/eyeree/devgui-c9.git"
   },
   "licenses": [
     {
@@ -55,7 +55,6 @@
     }
   ],
   "scripts": {
-    "start": "sh ./bin/devgui.sh -p 8080 -l 0.0.0.0 -w /workspace",
     "postinstall": "make ace"
   },
   "bin": {

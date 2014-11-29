@@ -1,35 +1,73 @@
-Makes a node.js application editable via web browser. It is based on a fork of https://github.com/ajaxorg/cloud9.
+Provides a web based GUI for developing node.js applications. Includes a full 
+featured code editor with integrated debugging.
 
 # Installation and Usage
 
-    npm install --save-dev weditable
-    wedit
+    npm install -g devgui
+    cd <node app directory>
+    gevgui
     
 This will start a web server on port 3131. You can access it by
-pointing your browser to: [http://localhost:3131](http://localhost:3131). You
-can specify a different port using `-p PORT` flag.
+pointing your browser to: [http://localhost:3131](http://localhost:3131). 
 
-    wedit -p 1234
+You can specify a different port using `-p PORT` flag.
+
+    devgui -p 1234
 
 By default the servife will only listen to localhost.
 To listen to a different IP or hostname, use the `-l HOSTNAME` flag.
 If you want to listen to all IP's:
 
-    wedit -l 0.0.0.0
+    devgui -l 0.0.0.0
 
 If you are listening to all IPs it is adviced to add authentication to the IDE.
 You can either do this by adding a reverse proxy in front of the service,
 or use the built in basic authentication through the `--username` and `--password` flags.
 
-    wedit --username SOMEUSER --password SOMEPW
+    devgui --username SOMEUSER --password SOMEPW
 
 You may also specify the directory that contains your node.js application using the workspace,
-`-w DIRECTORY`, flag. By default the service assumes your project is in the current working
+`-w DIRECTORY`, flag. By default devgui assumes your project is in the current working
 directory when run the wedit command.
 
-    wedit -w ~/git/myproject
+    devgui -w ~/git/myproject
 
-# Cloud9 IDE
+# Status and Goals
+
+This version of devgui is based on on a fork of https://github.com/ajaxorg/cloud9
+with a few quick and dirty bug fixes applied. It works well enough to be used
+for serious node.js application development, but...
+
+The open source cloud9 codebase and many of it's core dependencies, such
+as the APF (https://github.com/ajaxorg/apf), haven't received much attention 
+recently and have very little community support or documentation. It also hasn't
+kept up with new releases of other dependencies, such as ACE (https://github.com/ajaxorg/ace),
+the javescript based editor implemenation it uses. I also find the open
+sourced cloud9 codebase to be a bit more complex than would be ideal for a
+community supported node.js application development gui (cloud9, after all, is
+aiming for a different target).
+
+In short, while useful in its current form, devgui isn't the lean, focused,
+and stable node.js application development tool I want it to be, and that the 
+node.js community deserves.
+
+My origional intent was to incrementally evlove the code base into that tool,
+but after some consideration I decided that a clean start, still using ACE, 
+would be a better way to acieve devgui's goal:
+
+> Provide all developers with an easy to use and modify gui that streamlines 
+the node.js development process and is powerful engough to satisify the 
+needs of experienced developers working on complex applications.
+
+That version of devgui is being developed at https://github.com/eyeree/devgui.
+It will replace the contents of the devgui npm package once it has enough 
+functionality to support the development of itself.
+
+In the mean time, I hope you find this version of devgui to be an useful 
+preview of things to come.
+
+
+# About the Cloud9 IDE
 
 Cloud9 is an open source IDE built with [Node.JS] on the back-end and JavaScript/HTML5 on the client. 
 It is one component of the hosted service at [c9.io](http://c9.io). The version available here runs on 
