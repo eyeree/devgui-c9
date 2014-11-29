@@ -1,0 +1,18 @@
+-- Find in Files doesn't work after refresh when run tab is selected
+
+-- Scroll bar in workspace window (and others places) is difficult to use
+
+-- inconsistant behavior when in offline mode
+
+-- search files should ignore stuff in .c9revisions
+
+-- search for files output is sometimes corrupted
+
+-- default search result window colors don't match default ui colors
+
+-- should change console/output/search colors with edit colors, or allow seperate config
+
+-- right side panel changes width depending on which tab is selected
+
+-- left and right side panels have different UI behaviors
+

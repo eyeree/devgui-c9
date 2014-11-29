@@ -144,34 +144,28 @@
         .c9-menu-bar {
             position      : relative;
             overflow      : visible;
-            background    : url(images/c9-repeat-x.png) repeat-x 0 0 #49a8fa;
             -moz-user-select: -moz-none;
             -khtml-user-select: none;
             -webkit-user-select: none;
             -o-user-select: none;
             user-select: none;
         }
-        .c9-menu-bar .c9-mbar-bcont {
-            position   : relative;
-            overflow   : visible;
-        }
 
-        .c9-menu-bar .c9-mbar-bcont .c9-offline {
+        .c9-menu-bar .c9-mbar-cont .c9-offline {
             width:42px;
             height:21px;
-            position:absolute;
+            float: left;
             background:url(images/offline.png) no-repeat 0 0;
-            top:26px;
-            right: 3px;
             display: none;
-            z-index: 100000;
+            margin-top: 4px;
+            margin-left: 7px;
         }
 
-        .c9-menu-bar.offline .c9-mbar-bcont .c9-offline {
+        .c9-menu-bar.offline .c9-mbar-cont .c9-offline {
             display:block;
         }
 
-        .c9-menu-bar .c9-mbar-bcont .c9-local {
+        .c9-menu-bar .c9-local {
             width:42px;
             height:21px;
             position:absolute;
@@ -182,40 +176,14 @@
             z-index: 100000;
         }
 
-        .c9-menu-bar.offline.local .c9-mbar-bcont .c9-local {
+        .c9-menu-bar.offline.local .c9-local {
             display:block;
-        }
-
-        .c9-mbar-logo{
-            padding-top: 4px;
-        }
-
-        .c9-menu-bar .c9-mbar-logo .c9-mbar-bcont .c9-offlineInfo {
-            width: 158px;
-            height: auto;
-            line-height : 19px;
-            position: absolute;
-            top: 42px;
-            right: 3px;
-            z-index: 50000;
-            min-width: 0px;
-            min-height: 0px;
-            max-width: 9998px;
-            max-height: 9992px;
-            display: none;
-            opacity: 1;
-            padding: 5px 7px 7px 9px;
-            color: #BDBDBD;
-        }
-
-        .c9-menu-bar .c9-mbar-logo .c9-mbar-bcont .c9-offlineInfo .offlineInfoWarn{
-            color: #91c478;
         }
 
         .c9-menu-bar .c9-mbar-cont {
             position: relative;
             overflow: hidden;
-            padding: 0 74px 0 22px;
+            padding: 0 74px 0 0;
             margin: 0;
             height: 25px;
 
@@ -237,7 +205,7 @@
         }
 
         .c9-menu-bar .c9-mbar-cont .c9-divider-double,
-        .c9-menu-bar .c9-mbar-bcont .c9-mbar-minimize {
+        .c9-menu-bar .c9-mbar-minimize {
             border-right: 1px solid #1B1B1B;
             box-shadow: 1px 0 0 0 rgba(255,255,255,.08);
         }
@@ -252,7 +220,7 @@
             border: 0 !important;
         }
 
-        .c9-menu-bar .c9-mbar-bcont .c9-mbar-minimize {
+        .c9-menu-bar .c9-mbar-minimize {
             background: url(images/c9-no-repeat.png) no-repeat 0 -70px;
             cursor: pointer;
             height: 25px;
@@ -261,11 +229,11 @@
             top: 0px;
             width: 20px;
         }
-        .c9-menu-bar .c9-mbar-bcont .c9-mbar-minimize:hover {
+        .c9-menu-bar .c9-mbar-minimize:hover {
             background-position: -21px -70px;
         }
 
-        .c9-menu-bar .c9-mbar-bcont .c9-simple-btnDisabled.c9-mbar-minimize:hover {
+        .c9-menu-bar .c9-simple-btnDisabled.c9-mbar-minimize:hover {
             background-position: 0 -70px;
             cursor: default;
         }
@@ -279,105 +247,49 @@
             width: 74px;
             z-index: 999;
         }
-        .c9-mbar-round .mainlogo {
-            background: url("images/c9-no-repeat.png") no-repeat 0 -44px;
-            display: block;
-            height: 26px;
-            left: 33px;
-            pointer-events: all;
-            position: absolute;
-            text-indent: 100%;
-            top: 4px;
-            width: 37px;
-        }
-       .updateAvailable .c9-mbar-round .mainlogo {
+       .updateAvailable .c9-mbar-round {
            background: url("images/c9-no-repeat.png") no-repeat -96px -44px;
            cursor: pointer;
        }
 
-        .not-loggedin .c9-menu-bar .c9-mbar-bcont .c9-mbar-round {
+        .not-loggedin .c9-menu-bar .c9-mbar-round {
           top: 55px;
        }
 
-        .readonly .c9-menu-bar .c9-mbar-bcont .c9-mbar-round {
+        .readonly .c9-menu-bar .c9-mbar-round {
            top: 35px;
         }
-        .c9-menu-bar .c9-mbar-bcont .c9-activity {
-        	background : url(images/c9-no-repeat.png) no-repeat -84px 0;
-        	height: 10px;
-        	left: 24px;
-            pointer-events: all;
-        	position: absolute;
-        	top: 4px;
-        	width: 10px;
-        }
-        .c9-menu-bar .c9-mbar-bcont .c9-activity .light {
-            background : url(images/c9-no-repeat.png) no-repeat -102px -19px; /* nothing */
-            height: 10px;
-            left: 0;
-            position: absolute;
-            top: 0;
-            width: 10px;
-        }
 
-        .c9-menu-bar .c9-mbar-bcont .c9-sync {
+        .c9-menu-bar .c9-sync {
             background:url(images/sync_toggle.png) no-repeat 0 -20px;
         }
 
-        .c9-menu-bar .c9-mbar-bcont .c9-sync.btnChecked {
+        .c9-menu-bar .c9-sync.btnChecked {
             background:url(images/sync_toggle.png) no-repeat 0 0;
         }
 
-        .c9-menu-bar .c9-mbar-bcont .c9-sync.undetermined {
+        .c9-menu-bar .c9-sync.undetermined {
             background-position: 0 -80px;
         }
 
-        .c9-menu-bar .c9-mbar-bcont .c9-sync.btnDisabled {
+        .c9-menu-bar .c9-sync.btnDisabled {
             background-position: 0 -60px;
         }
 
-        /* ------------------------------------------------------------------------------------------
-         * c9 Menu Bar minimized
-         * --------------------------------------------------------------------------------------- */
-         .c9-menu-bar.minimized .c9-mbar-cont,
-         .c9-menu-bar.minimized .c9-mbar-bcont .c9-mbar-minimize {
-            background-color: #262626;
-            background-image: url("images/c9-repeat-x.png");
-            background-repeat: no-repeat;
-            background-position: 50% -13px;
-            cursor: pointer;
-            height: 6px;
-         }
-         .c9-menu-bar.minimized .c9-mbar-cont:hover,
-         .c9-menu-bar.minimized .c9-mbar-bcont .c9-mbar-minimize:hover {
-            background-position: 50% -21px;
-            box-shadow: 1px 0 0 0 rgba(255,255,255,.08), 0 6px 0 0 rgba(255,255,255,0.05) inset;
-         }
-         .c9-menu-bar.minimized .c9-mbar-cont * {
-            display: none;
-         }
-
-         .c9-menu-bar.minimized .c9-mbar-bcont .c9-mbar-minimize {
-            top: 1px;
-         }
     ]]></a:style>
 
     <a:presentation>
-        <a:main container="div/div/div[1]">
+        <a:main container="div[1]">
             <div class="c9-menu-bar">
-                <div class="c9-mbar-logo">
-                    <div class="c9-mbar-bcont">
-                        <div class="c9-mbar-cont"> </div>
-
-                        <div class="c9-mbar-round">
-                            <a id="backToC9" href="http://c9.io/" class="mainlogo backToC9" target="_blank" title="Go to c9.io">c9.io</a>
-                            <div class="c9-activity"><div id="saveStatus" class="light"> </div></div>
-                            <div class="c9-local"> </div>
-                            <div class="c9-offline" onmouseover="require('ext/offline/offline').toggleInfoDiv(1);" onmouseout="require('ext/offline/offline').toggleInfoDiv(0);"> </div>
-                            <div id="offlineInfoDiv" class="c9-offlineInfo menu-bk upward moveleft menu-bkFocus">Keep working without<br />internet. When you're back online, Cloud9 syncs your files for you!<div class="offlineInfoWarn">Some features are disabled.</div></div>
-                        </div>
-                    </div>
+                <div class="c9-mbar-cont">
+                    <div class="c9-offline"> </div>
                 </div>
+
+                <!-- div class="c9-mbar-round">
+                    <div class="c9-local"> </div>
+                    <div class="c9-offline" onmouseover="require('ext/offline/offline').toggleInfoDiv(1);" onmouseout="require('ext/offline/offline').toggleInfoDiv(0);"> </div>
+                    <div id="offlineInfoDiv" class="c9-offlineInfo menu-bk upward moveleft menu-bkFocus">Keep working without<br />internet. When you're back online, Cloud9 syncs your files for you!<div class="offlineInfoWarn">Some features are disabled.</div></div>
+                </div -->
             </div>
         </a:main>
     </a:presentation>
@@ -425,36 +337,6 @@
             bottom      : 2px;
             left        : 0;
             right       : 0;
-        }
-
-        .black-menu-bar .c9-logo {
-        	background: url(images/c9-no-repeat.png) no-repeat;
-        	box-shadow: 1px 0 0 0  black;
-        	cursor: pointer;
-        	height: 27px;
-        	width: 39px;
-        }
-        .black-menu-bar.closed .c9-logo {
-        	background-position: 0px -346px;
-        }
-        .black-menu-bar.closed .c9-logo.mnubtnOver {
-        	background-position: -40px -346px;
-        }
-        .black-menu-bar.closed .c9-logo.mnubtnDown {
-            background-position: -80px -346px;
-
-        }
-        .black-menu-bar .c9-logo {
-            background-position: -120px -346px;
-        }
-        .black-menu-bar .c9-logo.mnubtnOver {
-        	background-position: -160px -346px;
-        }
-        .black-menu-bar .c9-logo.mnubtnDown {
-            background-position: -200px -346px;
-        }
-        .black-menu-bar .c9-logo .icon{
-            display : none;
         }
 
         .black-menu-bar .toggle-black-menu-bar {
@@ -2046,7 +1928,7 @@
         .c9-toolbarbutton-glossyIcon .c9-label {
             padding: 0 0 0 22px;
         }
-
+        
         .btnSave .c9-icon {
             background-image: none !important;
             border: 1px solid #1C1C1C;
@@ -2106,20 +1988,6 @@
         .c9-toolbarbutton-glossy.disabled .c9-icon {
             background-color: white;
             opacity: .2;
-        }
-
-        .c9-menu-bar .c9-mbar-bcont .c9-activity .saving {
-            -webkit-animation: saving .4s linear 0 infinite;
-               -moz-animation: saving .4s linear 0 infinite;
-                    animation: saving .4s linear 0 infinite;
-
-            background-position: -102px 0px !important;
-        }
-        .c9-menu-bar .c9-mbar-bcont .c9-activity .saved {
-            background-position: -102px -19px !important;
-        }
-        .c9-menu-bar .c9-mbar-bcont .c9-activity .save {
-            background-position: -84px -19px !important;
         }
 
     ]]></a:style>
@@ -7304,27 +7172,6 @@
             display: none;
         }
 
-        .bk-window-cover {
-            background:url(images/bg-overlay.png) repeat 0 0;
-            opacity: 1;
-        }
-
-        .bk-window-cover .header {
-            background: url(images/cover-heaeder.png) repeat-x 0 0;
-            height: 12px;
-            position: absolute;
-            top: 0;
-            right: 0;
-            left: 0;
-        }
-        .bk-window-cover .logo {
-            background: url(images/cover-logo.png) no-repeat 0 0;
-            width: 215px;
-            height: 44px;
-            position: absolute;
-            right: 20px;
-            top: 25px;
-        }
     ]]></a:style>
 
     <a:presentation>
@@ -7355,11 +7202,6 @@
             <div/>
         </a:button>
         <a:cover>
-            <div class="bk-window-cover" opacity="1">
-                <div class="header"> </div>
-                <div class="c9-mbar-round"> <a href="/dashboard.html" class="mainlogo" target="_blank" title="back to dashboard">Dashboard</a>
-                </div>
-            </div>
         </a:cover>
     </a:presentation>
 </a:modalwindow>
@@ -7509,27 +7351,6 @@
             background: url(images/smile-image.png) no-repeat 0 0;
         }
 
-        .bk-window-cover {
-            background:url(images/bg-overlay.png) repeat 0 0;
-            opacity: 1;
-        }
-
-        .bk-window-cover .header {
-            background: url(images/cover-heaeder.png) repeat-x 0 0;
-            height: 12px;
-            position: absolute;
-            top: 0;
-            right: 0;
-            left: 0;
-        }
-        .bk-window-cover .logo {
-            background: url(images/cover-logo.png) no-repeat 0 0;
-            width: 215px;
-            height: 44px;
-            position: absolute;
-            right: 20px;
-            top: 25px;
-        }
     ]]></a:style>
 
     <a:presentation>

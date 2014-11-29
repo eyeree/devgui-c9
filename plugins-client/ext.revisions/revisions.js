@@ -568,10 +568,6 @@ module.exports = ext.register("ext/revisions/revisions", {
         var page = ide.getActivePage();
         var revObj = this.$getRevisionObject(message.path);
 
-        // guided tour magic conflicts with revisions--skip it
-        if (page && apf.isTrue(page.$model.data.getAttribute("guidedtour")))
-            return;
-
         switch (message.subtype) {
             case "confirmSave":
                 var ts = message.ts;

@@ -62,6 +62,7 @@ var config = [
         unixId: null,
         host: host
     }, {
+        version: "0.0.0",
         packagePath: "./cloud9.core",
         debug: false,
         fsUrl: fsUrl,
@@ -134,8 +135,6 @@ var config = [
             "ext/codecomplete/codecomplete",
             "ext/vim/vim",
             "ext/anims/anims",
-            "ext/guidedtour/guidedtour",
-            "ext/quickstart/quickstart",
             "ext/jslanguage/jslanguage",
             "ext/csslanguage/csslanguage",
             "ext/htmllanguage/htmllanguage",

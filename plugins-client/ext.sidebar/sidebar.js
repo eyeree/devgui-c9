@@ -29,17 +29,6 @@ module.exports = ext.register("ext/sidebar/sidebar", {
     init : function(){
         var _self = this;
 
-        function btnClick(){
-            if (panels.currentPanel)
-                panels.deactivate(null, true);
-            else if (panels.lastPanel)
-                panels.activate(panels.lastPanel);
-            else {
-                navbar.childNodes[1].dispatchEvent("mousedown")
-                navbar.childNodes[1].setValue(true);
-            }
-        }
-        
         this.nodes.push(
             hboxTabBar.insertBefore(new apf.hbox({
                 id: "navbar",
@@ -49,17 +38,6 @@ module.exports = ext.register("ext/sidebar/sidebar", {
                     + shadowOpen,
                 "minwidth": "45",
                 childNodes : [
-                    new apf.button({
-                        skin    : "mnubtn",
-                        "class" : "c9-logo",
-                        onclick : btnClick
-                    }),
-                    this.btnArrow = new apf.button({
-                        skin    : "mnubtn",
-                        visible : "false",
-                        "class" : "toggle-black-menu-bar",
-                        onclick : btnClick
-                    })
                 ]
             }), hboxTabBar.firstChild)
         );
@@ -73,20 +51,18 @@ module.exports = ext.register("ext/sidebar/sidebar", {
             closed = e.toWidth ? false : true;
 
             var l = navbar.$int.lastChild.previousSibling;
-            var w = l.offsetLeft + l.offsetWidth + (_self.btnArrow.visible ? 1 : 6);
+            var w = l.offsetLeft + l.offsetWidth + 6;
             
             setTimeout(function(){
                 if (!e.toWidth) {
                     apf.setStyleClass(navbar.$int, "closed");
                     navbar.$int.style.boxShadow = shadowClosed;
-                    _self.btnArrow.show();
                     if (panels.lastPanel)
                         panels.lastPanel.button.$setState("Out", {});
                 }
                 else {
                     apf.setStyleClass(navbar.$int, "", ["closed"]);
                     navbar.$int.style.boxShadow = shadowOpen;
-                    _self.btnArrow.hide();
                 }
             }, e.noanim ? 0 : 50);
 
@@ -192,7 +168,7 @@ module.exports = ext.register("ext/sidebar/sidebar", {
     
     setExpandedSize : function (){
         var l = navbar.$int.lastChild.previousSibling;
-        var w = l.offsetLeft + l.offsetWidth + (this.btnArrow.visible ? 6 : 1);
+        var w = l ? l.offsetLeft + l.offsetWidth + 6 : 6;
         navbar.setWidth(Math.max(w, colLeft.getWidth()));
     },
     
@@ -211,7 +187,7 @@ module.exports = ext.register("ext/sidebar/sidebar", {
             state   : "true",
             "class" : options["class"],
             caption : options.caption
-        }), beforePanel && beforePanel.button || this.btnArrow);
+        }), beforePanel && beforePanel.button);
 
         panelExt.button.addEventListener("mouseover", function(e){
             if (panels.currentPanel)

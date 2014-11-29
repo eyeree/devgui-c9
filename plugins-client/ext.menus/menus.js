@@ -33,7 +33,7 @@ module.exports = ext.register("ext/menus/menus", {
         this.nodes.push(
             this.menubar = logobar.insertBefore(new apf.bar({
                 "class" : "fakehbox aligncenter",
-                style : "padding : 0 5px 0 5px;position:static",
+                style : "padding : 0 0 0 0;position:static",
             }), logobar.firstChild),
 
 //            this.setRootMenu("Workspace", 10),
@@ -47,27 +47,14 @@ module.exports = ext.register("ext/menus/menus", {
         );
 
         var timer;
-        this.menubar.insertBefore(new apf.button({
-            "class" : "c9-mbar-minimize",
-            "skin" : "c9-simple-btn",
-            "onclick" : function(e){
-                if (!_self.minimized)
-                    _self.minimize();
-                else
-                    _self.restore();
-            }
-        }), this.menubar.firstChild);
-
+        
         logobar.$ext.addEventListener("mousedown", function(){
             _self.restore();
         });
 
-        var logoCorner = document.querySelector(".c9-mbar-round");
-
         logobar.$ext.addEventListener("mouseover",function(e){
             if (!_self.minimized || !ide.inited
-              || apf.isChildOf(logobar.$ext, e.fromElement, true)
-              || apf.isChildOf(logoCorner, e.toElement, true))
+              || apf.isChildOf(logobar.$ext, e.fromElement, true))
                 return;
 
             clearTimeout(timer);
@@ -157,15 +144,6 @@ module.exports = ext.register("ext/menus/menus", {
             } || null;
         }
 
-        //update c9 main logo link
-        if(window.cloud9config.hosted) {
-            var mainlogo = logobar.$ext.getElementsByClassName('mainlogo');
-            if(mainlogo && (mainlogo = mainlogo[0])) {
-                mainlogo.title = "back to dashboard";
-                mainlogo.href = "/dashboard.html";
-                mainlogo.innerHTML = "Dashboard";
-            }
-        }
     },
 
     $insertByIndex : function(parent, item, index) {
@@ -379,7 +357,7 @@ module.exports = ext.register("ext/menus/menus", {
         logobar.$ext.style.overflow = "hidden";
 
         anims.animateSplitBoxNode(logobar, {
-            height: "31px",
+            height: "27px",
             timingFunction: "cubic-bezier(.10, .10, .25, .90)",
             duration: 0.2
         }, function(){

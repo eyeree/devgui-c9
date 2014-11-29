@@ -1,5 +1,5 @@
 /*global btnSave:true, tabEditors:true, winCloseConfirm:true, btnYesAll:true, btnNoAll:true*/
-/*global btnSaveCancel:true, btnSaveYes:true, btnSaveNo:true, saveStatus:true*/
+/*global btnSaveCancel:true, btnSaveYes:true, btnSaveNo:true*/
 /*global trSaveAs:true, winSaveAs:true, fileDesc:true, barTools:true*/
 /*global trFiles:true, txtSaveAs:true, lblPath:true, winConfirm:true, btnConfirmOk:true*/
 
@@ -167,6 +167,7 @@ module.exports = ext.register("ext/save/save", {
                 tooltip  : "Save",
                 skin     : "c9-toolbarbutton-glossy",
                 disabled : "{!!!tabEditors.activepage}",
+                visible  : false,
                 command  : "quicksave"
             }), 1000)
         );
@@ -295,6 +296,8 @@ module.exports = ext.register("ext/save/save", {
 
             fs.beforeRename(e.args[0], e.args[1]);
         });
+        
+        btnSave.hide();
     },
 
     reverttosaved : function(){
@@ -714,7 +717,6 @@ module.exports = ext.register("ext/save/save", {
         btnSave.show();
 
         apf.setStyleClass(btnSave.$ext, "saving", ["saved", "error"]);
-        apf.setStyleClass(saveStatus, "saving", ["saved"]);
         btnSave.currentState = SAVING;
         btnSave.setCaption("Saving");
     },
@@ -729,7 +731,6 @@ module.exports = ext.register("ext/save/save", {
         btnSave.show();
 
         apf.setStyleClass(btnSave.$ext, "saved", ["saving", "error"]);
-        apf.setStyleClass(saveStatus, "saved", ["saving"]);
         btnSave.currentState = SAVED;
         btnSave.setCaption("Changes saved");
 

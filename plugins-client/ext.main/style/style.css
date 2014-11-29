@@ -60,14 +60,6 @@ BODY {
     z-index : 100;
     color : #666;
 }
-.bk-window-cover.loader {
-    bottom:0;
-    left:0;
-    position:absolute;
-    right:0;
-    top:0;
-    z-index:9999999;
-}
 .loaderContent {
     width: 350px;
     margin: 10% auto 0;
