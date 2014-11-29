@@ -22,7 +22,7 @@ module.exports = ext.register("ext/themes/themes", {
     type    : ext.GENERAL,
     nodes   : [],
     
-    defaultTheme : "ace/theme/textmate", //Default Theme
+    defaultTheme : "ace/theme/tomorrow_night_eighties", //Default Theme
     currTheme    : "",
     activeTheme  : null,
     saved        : false,
@@ -81,7 +81,6 @@ module.exports = ext.register("ext/themes/themes", {
     },
 
     set : function(path, preview){
-        settings.model.setQueryValue("editors/code/@theme", path);
         
         this.setThemedGUI(path);
         
@@ -92,112 +91,114 @@ module.exports = ext.register("ext/themes/themes", {
     
     loaded : {},
     setThemedGUI : function(path){
+        
         var _self = this;
-        var theme;
-        
-        try{
-            theme = require(path);
-        }
-        catch(e){
-            return setTimeout(function(){
-                _self.setThemedGUI(path);
-            }, 10);
-        }
-        
-        // fixes a problem with Ace architect loading /lib/ace, 
-        // creating a conflict with themes
-        if (theme.isDark === undefined) {
-            return setTimeout(function(){
-                _self.setThemedGUI(path);
-            }, 10);
-        }
 
-        this.activeTheme = theme;
+        console.log("loading theme", path);
         
-        this.isDark = theme.isDark;
-        
-        
-        var editorDiv = hboxMain.$ext;
-        var editorHolder = tabEditors.parentNode.$ext;
-        var tabsDiv = tabEditors.$buttons.parentNode.parentNode;
-        
-        editorDiv.setAttribute("id", "editorDiv");
-        tabsDiv.setAttribute("id", "tabsDiv");
-        
-        if (theme.isDark) {
-            apf.setStyleClass(editorDiv, "dark");
-            apf.setStyleClass(editorHolder, "dark");
-            if (!apf.isGecko) 
-                apf.setStyleClass(tabsDiv, "dark");
-        }
-        else {
-            apf.setStyleClass(editorDiv, "", ["dark"]);
-            apf.setStyleClass(editorHolder, "", ["dark"]);
-            apf.setStyleClass(tabsDiv, "", ["dark"]);
-        }
-        
-        // !important puting ace into more divs with theme.cssClass makes it slower
-        var aceClass = theme.cssClass;
-        var cssClass = aceClass.replace(/^ace/, "c9");
-        
-        if (_self.lastTheme) {
-            apf.setStyleClass(editorDiv, "", [_self.lastTheme]);
-            apf.setStyleClass(editorHolder, "", [_self.lastTheme]);
-            apf.setStyleClass(tabsDiv, "", [_self.lastTheme]);
-        }
-        
-        _self.lastTheme = cssClass;
-        
-        apf.setStyleClass(editorDiv, cssClass);
-        apf.setStyleClass(editorHolder, cssClass);
-        apf.setStyleClass(tabsDiv, cssClass);
-        
-        if (!theme.bg) {
-            theme.bg = apf.getStyleRule("." + aceClass + " .ace_gutter", "backgroundColor");
-            theme.fg = apf.getStyleRule("." + aceClass + " .ace_gutter", "color");
-            theme.textBg = apf.getStyleRule("." + aceClass, "backgroundColor") ||
-                apf.getStyleRule("." + aceClass + ", ." + aceClass + " .ace_scroller", "backgroundColor");
-        }
-        
-        ide.dispatchEvent("theme.change", {theme: theme, path: path});
-        
-        if (_self.loaded[path])
-            return;
+        require([path], function(theme) {
             
-        _self.loaded[path] = true;
-        
-        if (theme.textBg == "rgb(255, 255, 255)")
-            theme.textBg = "#fbfbfb";
-                
-        apf.importStylesheet([
-            (apf.isGecko ? [] : 
-                ["#tabsDiv." + cssClass + " .curbtn .tab_middle",
-                 (theme.isDark  ? "color:rgba(255, 255, 255, 0.8)" : "") 
-                 + ";background-color: " + theme.bg + " !important"]),
-            ["#editorDiv." + cssClass + " > .basic, "
-             + "#editorDiv." + cssClass + " > .vsplitbox, "
-             + "#tabsDiv." + cssClass + ", " // > .editor_tab
-             + "." + cssClass + " .c9terminal, "
-             + "." + cssClass + " .codeditorHolder, "
-             + "." + cssClass + " .winGoToFile, "
-             + "." + cssClass + " .revisionsBar .topbar, "
-             + "." + cssClass + " .revisionsBar .revisionsHolder, "
-             + "." + cssClass + " .code_complete_text_holder, "
-             + "." + cssClass + " .session_page," 
-             + "." + aceClass,
-             "color:" + theme.fg + " !important; background-color: " + theme.bg + " !important"],
-            ["." + cssClass + " .searchresults > div > span, "
-             + "." + cssClass + ".dark .revisions-list .revision, "
-             + "." + cssClass + ".dark .cc_complete_option, "
-             + "." + cssClass + " .searchresults > div",
-             (theme.isDark  ? "color:rgba(255, 255, 255, 0.8)" : "color:" + theme.fg + ";")],
-            // TODO find a better way to handle editor corner
-            ["." + aceClass + " .ace_scroller",
-             "color:" + theme.fg + " !important; background-color: " + theme.textBg + " !important"]
-             
-        ], self, _self.stylesheet);
+            console.log("loaded theme", path);
 
-        ide.dispatchEvent("theme.init", {theme: theme, path: path});
+            // fixes a problem with Ace architect loading /lib/ace, 
+            // creating a conflict with themes
+            if (theme.isDark === undefined) {
+                return setTimeout(function(){
+                    _self.setThemedGUI(path);
+                }, 10);
+            }
+    
+            settings.model.setQueryValue("editors/code/@theme", path);
+
+            _self.activeTheme = theme;
+            
+            _self.isDark = theme.isDark;
+            
+            
+            var editorDiv = hboxMain.$ext;
+            var editorHolder = tabEditors.parentNode.$ext;
+            var tabsDiv = tabEditors.$buttons.parentNode.parentNode;
+            
+            editorDiv.setAttribute("id", "editorDiv");
+            tabsDiv.setAttribute("id", "tabsDiv");
+            
+            if (theme.isDark) {
+                apf.setStyleClass(editorDiv, "dark");
+                apf.setStyleClass(editorHolder, "dark");
+                if (!apf.isGecko) 
+                    apf.setStyleClass(tabsDiv, "dark");
+            }
+            else {
+                apf.setStyleClass(editorDiv, "", ["dark"]);
+                apf.setStyleClass(editorHolder, "", ["dark"]);
+                apf.setStyleClass(tabsDiv, "", ["dark"]);
+            }
+            
+            // !important puting ace into more divs with theme.cssClass makes it slower
+            var aceClass = theme.cssClass;
+            var cssClass = aceClass.replace(/^ace/, "c9");
+            
+            if (_self.lastTheme) {
+                apf.setStyleClass(editorDiv, "", [_self.lastTheme]);
+                apf.setStyleClass(editorHolder, "", [_self.lastTheme]);
+                apf.setStyleClass(tabsDiv, "", [_self.lastTheme]);
+            }
+            
+            _self.lastTheme = cssClass;
+            
+            apf.setStyleClass(editorDiv, cssClass);
+            apf.setStyleClass(editorHolder, cssClass);
+            apf.setStyleClass(tabsDiv, cssClass);
+            
+            if (!theme.bg) {
+                theme.bg = apf.getStyleRule("." + aceClass + " .ace_gutter", "backgroundColor");
+                theme.fg = apf.getStyleRule("." + aceClass + " .ace_gutter", "color");
+                theme.textBg = apf.getStyleRule("." + aceClass, "backgroundColor") ||
+                    apf.getStyleRule("." + aceClass + ", ." + aceClass + " .ace_scroller", "backgroundColor");
+            }
+            
+            ide.dispatchEvent("theme.change", {theme: theme, path: path});
+            
+            if (_self.loaded[path])
+                return;
+                
+            _self.loaded[path] = true;
+            
+            if (theme.textBg == "rgb(255, 255, 255)")
+                theme.textBg = "#fbfbfb";
+                    
+            apf.importStylesheet([
+                (apf.isGecko ? [] : 
+                    ["#tabsDiv." + cssClass + " .curbtn .tab_middle",
+                     (theme.isDark  ? "color:rgba(255, 255, 255, 0.8)" : "") 
+                     + ";background-color: " + theme.bg + " !important"]),
+                ["#editorDiv." + cssClass + " > .basic, "
+                 + "#editorDiv." + cssClass + " > .vsplitbox, "
+                 + "#tabsDiv." + cssClass + ", " // > .editor_tab
+                 + "." + cssClass + " .c9terminal, "
+                 + "." + cssClass + " .codeditorHolder, "
+                 + "." + cssClass + " .winGoToFile, "
+                 + "." + cssClass + " .revisionsBar .topbar, "
+                 + "." + cssClass + " .revisionsBar .revisionsHolder, "
+                 + "." + cssClass + " .code_complete_text_holder, "
+                 + "." + cssClass + " .session_page," 
+                 + "." + aceClass,
+                 "color:" + theme.fg + " !important; background-color: " + theme.bg + " !important"],
+                ["." + cssClass + " .searchresults > div > span, "
+                 + "." + cssClass + ".dark .revisions-list .revision, "
+                 + "." + cssClass + ".dark .cc_complete_option, "
+                 + "." + cssClass + " .searchresults > div",
+                 (theme.isDark  ? "color:rgba(255, 255, 255, 0.8)" : "color:" + theme.fg + ";")],
+                // TODO find a better way to handle editor corner
+                ["." + aceClass + " .ace_scroller",
+                 "color:" + theme.fg + " !important; background-color: " + theme.textBg + " !important"]
+                 
+            ], self, _self.stylesheet);
+    
+            ide.dispatchEvent("theme.init", {theme: theme, path: path});
+            
+        });
+        
     },
 
     init : function(){
