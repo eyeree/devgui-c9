@@ -167,7 +167,7 @@ module.exports = ext.register("ext/sidebar/sidebar", {
     },
     
     setExpandedSize : function (){
-        var l = navbar.$int.lastChild.previousSibling;
+        var l = navbar.$int.lastChild && navbar.$int.lastChild.previousSibling;
         var w = l ? l.offsetLeft + l.offsetWidth + 6 : 6;
         navbar.setWidth(Math.max(w, colLeft.getWidth()));
     },
