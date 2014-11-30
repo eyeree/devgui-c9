@@ -42,29 +42,21 @@ The open source cloud9 codebase and many of it's core dependencies, such
 as APF (https://github.com/ajaxorg/apf), haven't received much attention 
 recently and have very little community support or documentation. It also hasn't
 kept up with new releases of other dependencies, such as ACE (https://github.com/ajaxorg/ace),
-the javescript based editor implemenation it uses. I also find the open
-sourced cloud9 codebase to be a bit more complex than would be ideal for a
-community supported node.js application development gui (cloud9, after all, is
-aiming for a different target).
+the javescript based editor implemenation it uses.
 
 In short, while useful in its current form, devgui isn't the lean, focused,
-and stable node.js application development tool I want it to be, and that the 
-node.js community deserves.
+and stable node.js application development tool I want it to be
 
 My origional intent was to incrementally evlove the code base into that tool,
 but after some consideration I decided that a clean start, still using ACE, 
-would be a better way to achieve devgui's goal:
-
-> Provide all developers with an easy to use and modify gui that streamlines 
-the node.js development process and is powerful engough to satisify the 
-needs of experienced developers working on complex applications.
+would be a better way to go.
 
 That version of devgui is being developed at https://github.com/eyeree/devgui.
 It will replace the contents of the devgui npm package once it has enough 
-functionality to support the development of itself.
+functionality to support the development of itself... but no guarantees that
+time will ever come.
 
-In the mean time, I hope you find this version of devgui to be an useful 
-preview of things to come.
+In the mean time, I hope you find this version of devgui to be useful.
 
 
 # About the Cloud9 IDE
