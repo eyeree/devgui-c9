@@ -4,6 +4,8 @@ var fs = require("fs");
 var Store = require("connect/lib/middleware/session/store");
 var exists = fs.existsSync || path.existsSync;
 
+var debug = false;
+
 module.exports = function startup(options, imports, register) {
 
     assert(options.sessionsPath, "option 'sessionsPath' is required");
@@ -71,18 +73,23 @@ FileStore.prototype.__proto__ = Store.prototype;
 FileStore.prototype.get = function(sid, fn){
   var self = this;
   var exists = fs.exists || path.exists;
-  exists(self.basePath + "/" + sid, function(exists) {
+  var sid_name = sid.replace("/", "_");
+  if(debug) console.log("get", sid, sid_name);
+  exists(self.basePath + "/" + sid_name, function(exists) {
       if (exists) {
-          fs.readFile(self.basePath + "/" + sid, function(err, data) {
+          if(debug) console.log("session exists", sid);
+          fs.readFile(self.basePath + "/" + sid_name, function(err, data) {
               if (err) {
+                  if(debug) console.log("read error", err);
                   fn && fn(err);
               }
               else {
+                  if(debug) console.log("read data");
                   var sess;
                   try {
                       sess = JSON.parse(data);
                   } catch(e) {
-                      console.warn("Error '" + e + "' reading session: " + sid, data);
+                      if(debug) console.warn("Error '" + e + "' reading session: " + sid, data);
                       self.destroy(sid, fn);
                       return;
                   }
@@ -90,39 +97,50 @@ FileStore.prototype.get = function(sid, fn){
                       ? new Date(sess.cookie.expires)
                       : sess.cookie.expires;
                   if (!expires || new Date < expires) {
+                      if(debug) console.log('read session', sess);
                       fn(null, sess);
                   } else {
+                      if(debug) console.log("session expired");
                       self.destroy(sid, fn);
                   }                      
               }
           });
       }
       else {
+          if(debug) console.log("session doesn't exist", sid);
           fn();
       }
   });      
 };
 
 FileStore.prototype.set = function(sid, sess, fn){
+  if(debug) console.log("session set", sid);
   var self = this;
-  var path = self.basePath + "/" + sid;
+  var sid_name = sid.replace("/", "_");
+  var path = self.basePath + "/" + sid_name;
   var tmpPath = path + "~" + new Date().getTime();
-  fs.writeFile(path, JSON.stringify(sess), function(err) {
-      if (err)
-        return fn && fn(err);
+  fs.writeFile(tmpPath, JSON.stringify(sess), function(err) {
+      if (err) {
+        if(debug) console.log("session write err", err);
+          return fn && fn(err);
+      }
+      if(debug) console.log("session write success");
 
       fs.rename(tmpPath, path, function(err) {
+        if(debug) console.log("session renamed", tmpPath, path, err);
         fn && fn(err);
       });
   });
 };
 
 FileStore.prototype.destroy = function(sid, fn){
+  if(debug) console.log("session destory", sid);
   var self = this;
   var exists = fs.exists || path.exists;
-  exists(self.basePath + "/" + sid, function(exists) {
+  var sid_name = sid.replace("/", "_");
+  exists(self.basePath + "/" + sid_name, function(exists) {
       if (exists) {
-          fs.unlink(self.basePath + "/" + sid, function(err) {
+          fs.unlink(self.basePath + "/" + sid_name, function(err) {
               if (err) {
                   fn && fn(err);
               }
@@ -137,6 +155,7 @@ FileStore.prototype.destroy = function(sid, fn){
 };
 
 FileStore.prototype.all = function(fn){
+    if(debug) console.log("session all");
     var self = this;
     fs.readdir(self.basePath, function(err, files) {
         if (err) {
