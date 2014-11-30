@@ -43,7 +43,7 @@ define(function(require, exports, module) {
 
 
             var c = 0;
-            menus.addItemByPath("Help/Source", new apf.item({ onclick : function(){ window.open('https://github.com/eyeree/devgui'); }}), c += 100);
+            menus.addItemByPath("Help/Source", new apf.item({ onclick : function(){ window.open('https://github.com/eyeree/devgui-c9'); }}), c += 100);
 
             menus.addItemByPath("Help/~", new apf.divider(), c += 100);
             ide.addEventListener("hook.ext/keybindings_default/keybindings_default", function(c, e) {
